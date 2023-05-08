@@ -5,7 +5,7 @@ $(document).ready(function () {
         event.preventDefault();
         var productName = $('#product-name').val();
         var productDescription = $('#product-description').val();
-        $('#listing').empty();
+        $('#product-names,#product-descriptions').empty();
         $('#loader').show();
         $.ajax({
             url: '/generate-listing',
@@ -28,13 +28,22 @@ $(document).ready(function () {
                 $('#loader').addClass('spinner');
             },
             success: function (response) {
-                if (response.choices && response.choices.length > 0) {
-                    $.each(response.choices, function(index, choice) {
-                        $('#listing').append('<p>' + choice.text + '</p>');
+                if (response.product_names && response.product_names.choices && response.product_names.choices.length > 0) {
+                    $.each(response.product_names.choices, function(index, choice) {
+                        $('#product-names').append('<h3>Product Name: </h3><p>' + choice.text + '</p>');
                     });
                 }
                 else {
-                    $('#listing').append('<p>Sorry, I could not understand your request.</p>');
+                    $('#product-names').append('<p>No product name suggestions available.</p>');
+                }
+            
+                if (response.product_descriptions && response.product_descriptions.choices && response.product_descriptions.choices.length > 0) {
+                    $.each(response.product_descriptions.choices, function(index, choice) {
+                        $('#product-descriptions').append('<h3>Product Description: </h3><p>' + choice.text + '</p>');
+                    });
+                }
+                else {
+                    $('#product-descriptions').append('<p>No product description suggestions available.</p>');
                 }
             },
             complete: function() {

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <!-- Main content -->
     <div class="container-fluid">
@@ -29,7 +28,8 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-                <div id="listing"></div>
+                <div id="product-names"></div>
+                <div id="product-descriptions"></div>
             </div>
         </div>
     </div>
