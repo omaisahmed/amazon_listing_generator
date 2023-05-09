@@ -33,7 +33,7 @@ class HomeController extends Controller
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
         ])->post('https://api.openai.com/v1/engines/davinci/completions', [
-                'prompt' => $request->input('product-name'),
+                'prompt' => 'Generate an Amazon product listing for a ' . $request->input('product_name'),
                 'temperature' => $request->input('temperature'),
                 'max_tokens' => $request->input('max_tokens'),
                 'n' => 5,
@@ -44,7 +44,7 @@ class HomeController extends Controller
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
         ])->post('https://api.openai.com/v1/engines/davinci/completions', [
-                'prompt' => $request->input('product-description'),
+                'prompt' => 'Generate an Amazon product description for a ' . $request->input('product_description'),
                 'temperature' => $request->input('temperature'),
                 'max_tokens' => $request->input('max_tokens'),
                 'n' => 5,
@@ -56,6 +56,5 @@ class HomeController extends Controller
             'product_descriptions' => $productDescriptionResponse->json(),
         ]);
     }
-
 
 }
