@@ -20,7 +20,7 @@ $(document).ready(function () {
                 product_name: productName,
                 product_description: productDescription,
                 temperature: 0.5,
-                max_tokens: 100,
+                max_tokens: 100,         
                 n: 5,
                 stop: '\n'
             }),
@@ -28,9 +28,9 @@ $(document).ready(function () {
                 $('#loader').addClass('spinner');
             },
             success: function (response) {
-                if (response.product_names && response.product_names.choices && response.product_names.choices.length > 0) {
+                if (response.product_names && response.product_names.choices && response.product_names.choices.length > 0) {                   
                     $.each(response.product_names.choices, function(index, choice) {
-                        $('#product-names').append('<h3>Product Name: </h3><p>' + choice.text + '</p>');
+                        $('#product-names').append('<p>' + choice.text + '</p>');
                     });
                 }
                 else {
@@ -38,8 +38,9 @@ $(document).ready(function () {
                 }
             
                 if (response.product_descriptions && response.product_descriptions.choices && response.product_descriptions.choices.length > 0) {
+                    $('#product-descriptions').append('<h3>Description:</h3>');
                     $.each(response.product_descriptions.choices, function(index, choice) {
-                        $('#product-descriptions').append('<h3>Product Description: </h3><p>' + choice.text + '</p>');
+                        $('#product-descriptions').append('<p>' + choice.text + '</p>');
                     });
                 }
                 else {

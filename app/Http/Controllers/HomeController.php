@@ -32,22 +32,23 @@ class HomeController extends Controller
         $productNameResponse = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
-        ])->post('https://api.openai.com/v1/engines/davinci/completions', [
-                'prompt' => 'Generate an Amazon product listing for a ' . $request->input('product_name'),
+        ])->post('https://api.openai.com/v1/engines/text-davinci-002/completions', [
+                'prompt' => 'Can you provide a compelling story or narrative related to the product ' . $request->input('product_name') . ' with a catchy title.',
                 'temperature' => $request->input('temperature'),
                 'max_tokens' => $request->input('max_tokens'),
-                'n' => 5,
+                'n' => $request->input('n'),
                 'stop' => '\n'
             ]);
 
         $productDescriptionResponse = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
-        ])->post('https://api.openai.com/v1/engines/davinci/completions', [
-                'prompt' => 'Generate an Amazon product description for a ' . $request->input('product_description'),
+        ])->post('https://api.openai.com/v1/engines/text-davinci-002/completions', [
+                'prompt' => 'Generate an Amazon product listing for a ' . $request->input('product_name') . '.Provide the key features, specifications, and benefits of the product.',
+
                 'temperature' => $request->input('temperature'),
                 'max_tokens' => $request->input('max_tokens'),
-                'n' => 5,
+                'n' => $request->input('n'),
                 'stop' => '\n'
             ]);
 
