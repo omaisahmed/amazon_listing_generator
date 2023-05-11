@@ -5,6 +5,11 @@ $(document).ready(function () {
         event.preventDefault();
         var productName = $('#product-name').val();
         var productDescription = $('#product-description').val();
+        var length_limit = $('#length-limit').val();
+        var description_length = $('#description-length').val();
+        console.log(description_length);
+        // var language = $('#language').val();
+        // console.log(language);
         $('#product-names,#product-descriptions').empty();
         $('#loader').show();
         $.ajax({
@@ -19,10 +24,14 @@ $(document).ready(function () {
             data: JSON.stringify({
                 product_name: productName,
                 product_description: productDescription,
+                // language: language,
                 temperature: 0.5,
-                max_tokens: 100,         
-                n: 5,
-                stop: '\n'
+                max_tokens: length_limit,         
+                n: description_length,
+                stop: '\n',
+                top_p: 0.5,
+                frequency_penalty: 0.5,
+                presence_penalty: 0.5,               
             }),
             beforeSend: function() {
                 $('#loader').addClass('spinner');

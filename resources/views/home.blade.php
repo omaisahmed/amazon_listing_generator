@@ -15,6 +15,39 @@
                         <label for="product-description">Product Description:</label>
                         <textarea id="product-description" name="product_description" class="form-control" rows="5"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="length-limit">Length Limit:</label>
+                        <select class="form-control" id="length-limit">
+                            <option value="200">200 Bytes</option>
+                            <option value="250">250 Bytes</option>
+                            <option value="500">500 Bytes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description-length">Description Length:</label>
+                        <select class="form-control" id="description-length">
+                            <option value="1">1 Paragraph</option>
+                            <option value="3">3 Paragraphs</option>
+                        </select>
+                    </div>
+
+                    {{-- <div class="form-group">
+                        <label for="language">Select Language:</label>
+                        <select class="form-control" id="language">
+                          <option value="en">English</option>
+                          <option value="es">Spanish</option>
+                          <option value="fr">French</option>
+                          <option value="de">German</option>
+                          <option value="it">Italian</option>
+                          <option value="nl">Dutch</option>
+                          <option value="pt">Portuguese</option>
+                          <option value="ru">Russian</option>
+                          <option value="zh">Chinese</option>
+                          <option value="ja">Japanese</option>
+                          <option value="ko">Korean</option>
+                        </select>
+                    </div> --}}
+                      
                     <button type="submit" class="btn btn-primary mt-2">Generate Listing</button>
                 </form>
             </div>
