@@ -1,6 +1,10 @@
  <!-- Header -->
- <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-     <a class="navbar-brand" href="/">Amazon Listing Generator</a>
+ <nav class="navbar navbar-expand-md navbar-dark bg-dark p-0">
+     <div class="container-fluid">
+        <a class="navbar-brand mx-auto" href="/">
+            <img class="navbar-brand mx-auto" width="100" height="100" src="/images/logo.png">Amazon Listing Generator
+        </a>
+    </div>
      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
          aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>

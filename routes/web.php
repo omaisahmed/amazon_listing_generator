@@ -14,11 +14,11 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+// Route::get('/', function () {
+//     return redirect('/home');
+// });
 
-Auth::routes();
+// Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/generate-listing', [HomeController::class, 'generate_listing'])->name('home');

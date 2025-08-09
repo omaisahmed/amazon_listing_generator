@@ -7,21 +7,6 @@ use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
         return view('home');
@@ -29,40 +14,49 @@ class HomeController extends Controller
 
     public function generate_listing(Request $request)
     {
-        $productNameResponse = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
-        ])->post('https://api.openai.com/v1/engines/text-davinci-003/completions', [
-                'prompt' => 'Can you provide a compelling story or narrative related to the product ' . $request->input('product_name') . ' with a catchy title.',
-                // 'language' => $request->input('language'),
-                'temperature' => $request->input('temperature'),
-                'max_tokens' => (int) $request->input('max_tokens'),
-                'n' => 5,                
-                'stop' => '\n',
-                'top_p' => (int) $request->input('top_p'),
-                'frequency_penalty' => (int) $request->input('frequency_penalty'),
-                'presence_penalty' => (int) $request->input('presence_penalty')            
-            ]);
+        $productName = $request->input('product_name');
+        $productDescription = $request->input('product_description');
+        $lengthLimit = $request->input('length_limit', 500); // match JS key
+        $descriptionLength = $request->input('description_length', 1); // match JS key
 
-        $productDescriptionResponse = Http::withHeaders([                                                 
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
-        ])->post('https://api.openai.com/v1/engines/text-davinci-003/completions', [
-                'prompt' => 'Generate an Amazon product listing for a ' . $request->input('product_name') . '.Provide the key features, specifications, and benefits of the product.',
-                // 'language' => $request->input('language'),
-                'temperature' => $request->input('temperature'),
-                'max_tokens' => (int) $request->input('max_tokens'),
-                'n' => (int) $request->input('n'),
-                'stop' => '\n' ,
-                'top_p' => (int) $request->input('top_p'),
-                'frequency_penalty' => (int) $request->input('frequency_penalty'),
-                'presence_penalty' => (int) $request->input('presence_penalty')               
-            ]);
+        $prompt = "
+        You are an Amazon listing generator.
+        Given the product name and description below, respond in strict JSON format:
+        {
+            \"product_names\": [\"Title 1\", \"Title 2\", \"Title 3\"],
+            \"product_description\": \"Detailed description here\"
+        }
 
-        return response()->json([
-            'product_names' => $productNameResponse->json(),
-            'product_descriptions' => $productDescriptionResponse->json(),
+        Product Name: {$productName}
+        Product Description: {$productDescription}
+        Max Title Length: {$lengthLimit} bytes
+        Description Paragraphs: {$descriptionLength}
+        ";
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('OPENROUTER_API_KEY'),
+            'Content-Type' => 'application/json'
+        ])->post('https://openrouter.ai/api/v1/chat/completions', [
+            'model' => 'meta-llama/llama-3.1-8b-instruct',
+            'max_tokens' => $lengthLimit,
+            'temperature' => 0.7,
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are a helpful assistant that only outputs valid JSON.'],
+                ['role' => 'user', 'content' => $prompt]
+            ]
         ]);
-    }
 
+        $data = $response->json();
+        $content = $data['choices'][0]['message']['content'] ?? '';
+        $jsonOutput = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json([
+                'error' => 'Invalid AI response',
+                'raw' => $content
+            ], 500);
+        }
+
+        return response()->json($jsonOutput);
+    }
 }

@@ -35,6 +35,20 @@
     {{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {{-- <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+        .create(document.querySelector('#generated-description'))
+        .then(editor => {
+            const editable = editor.ui.view.editable.element;
+
+            editable.addEventListener('input', () => {
+                editable.style.height = 'auto';
+                editable.style.height = editable.scrollHeight + 'px';
+            });
+        })
+        .catch(error => console.error(error));
+    </script> --}}
 
 </body>
 

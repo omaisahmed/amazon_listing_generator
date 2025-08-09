@@ -2,7 +2,7 @@
 @import url('https://fonts.bunny.net/css?family=Nunito');
 
 // Variables
-@import 'variables';
+// @import 'variables';
 
 // Bootstrap
 // @import 'bootstrap/scss/bootstrap';
@@ -31,3 +31,15 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Target CKEditor editable area */
+// .ck-editor__editable[role="textbox"] {
+//     min-height: 300px; /* starting height */
+//     max-height: none;  /* remove limit */
+//     overflow: hidden;  /* hide scrollbars */
+// }
+#full-typing {
+    white-space: pre-wrap; /* Preserve line breaks, but wrap long lines */
+    word-wrap: break-word; /* Break long words if needed */
+}
+

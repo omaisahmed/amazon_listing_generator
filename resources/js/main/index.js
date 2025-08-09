@@ -1,72 +1,88 @@
 $(document).ready(function () {
 
-    // AJAX Form
     $('#product-form').submit(function (event) {
         event.preventDefault();
-        var productName = $('#product-name').val();
-        var productDescription = $('#product-description').val();
-        var length_limit = $('#length-limit').val();
-        var description_length = $('#description-length').val();
-        console.log(description_length);
-        // var language = $('#language').val();
-        // console.log(language);
-        $('#product-names,#product-descriptions').empty();
+
+        const productName = $('#product-name').val();
+        const productDescription = $('#product-description').val();
+        const length_limit = $('#length-limit').val();
+        const description_length = $('#description-length').val();
+
+        $('#product-names, #product-descriptions').empty();
         $('#loader').show();
+
         $.ajax({
             url: '/generate-listing',
             type: 'POST',
             dataType: 'json',
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + '{{ env("OPENAI_API_KEY") }}'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: JSON.stringify({
                 product_name: productName,
                 product_description: productDescription,
-                // language: language,
-                temperature: 0.5,
-                max_tokens: length_limit,         
-                n: description_length,
-                stop: '\n',
-                top_p: 0.5,
-                frequency_penalty: 0.5,
-                presence_penalty: 0.5,               
+                length_limit: length_limit,          // ✅ matches Laravel
+                description_length: description_length // ✅ matches Laravel
             }),
-            beforeSend: function() {
-                $('#loader').addClass('spinner');
-            },
+            contentType: 'application/json',
             success: function (response) {
-                if (response.product_names && response.product_names.choices && response.product_names.choices.length > 0) {                   
-                    $.each(response.product_names.choices, function(index, choice) {
-                        $('#product-names').append('<p>' + choice.text + '</p>');
+                $('#product-names').empty();
+                $('#product-descriptions').empty();
+
+                // Add headings
+                $('#product-names').append('<h4>Title Names</h4>');
+                $('#product-descriptions').append('<h4>Description</h4>');
+
+                // Show product names instantly
+                if (Array.isArray(response.product_names) && response.product_names.length > 0) {
+                    let nameList = $('<ul></ul>');
+                    response.product_names.forEach(function (name) {
+                        nameList.append('<li>' + name + '</li>');
                     });
-                }
-                else {
+                    $('#product-names').append(nameList);
+                } else {
                     $('#product-names').append('<p>No product name suggestions available.</p>');
                 }
-            
-                if (response.product_descriptions && response.product_descriptions.choices && response.product_descriptions.choices.length > 0) {
-                    $('#product-descriptions').append('<h3>Description:</h3>');
-                    $.each(response.product_descriptions.choices, function(index, choice) {
-                        $('#product-descriptions').append('<p>' + choice.text + '</p>');
-                    });
+
+                // Description typing effect
+                let descriptionText = '';
+                if (typeof response.product_description === 'string') {
+                    descriptionText = response.product_description;
+                }
+                else if (response.product_description && Array.isArray(response.product_description.paragraphs)) {
+                    descriptionText = response.product_description.paragraphs.join("\n\n");
                 }
                 else {
-                    $('#product-descriptions').append('<p>No product description suggestions available.</p>');
+                    descriptionText = "No product description available.";
                 }
+
+                $('#product-descriptions').append('<pre id="full-typing"></pre>');
+                typeWriterEffect($('#full-typing'), descriptionText.trim());
+
+                $('#loader').hide();
             },
-            complete: function() {
-                $('#loader').removeClass('spinner');
+            complete: function () {
+                $('#loader').hide();
             },
             error: function (xhr) {
-                console.log(xhr);
+                console.error(xhr.responseText);
+                $('#loader').hide();
             }
         });
+
+        function typeWriterEffect(element, text, speed = 20) {
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    element.append(text.charAt(i));
+                    i++;
+                    setTimeout(typing, speed);
+                }
+            }
+            typing();
+        }
     });
 
     // Current Year Footer
-    const currentYear = new Date().getFullYear();
-    document.getElementById('current-year').innerHTML = currentYear;
-
+    $('#current-year').text(new Date().getFullYear());
 });
